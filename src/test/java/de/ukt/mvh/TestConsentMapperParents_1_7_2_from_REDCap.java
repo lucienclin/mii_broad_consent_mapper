@@ -16,11 +16,11 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
 	
     private static Consent targetConsent;
     private static Date birthday;
-    private static IParser jsonParser = forR4Cached().newJsonParser();
 
     @BeforeAll
     public static void init() throws Exception {
        var classLoader = TestConsentMapper_1_7_2.class.getClassLoader();
+       var jsonParser = forR4Cached().newJsonParser();
        targetConsent = jsonParser.parseResource(Consent.class, new InputStreamReader(classLoader.getResourceAsStream("consent_parents.json")));
        birthday = addYears(targetConsent.getProvision().getPeriod().getEnd(), -18);
     }
@@ -71,8 +71,7 @@ public class TestConsentMapperParents_1_7_2_from_REDCap {
 ]
 """;
         Consent consent = ConsentMapperParents_1_7_2_from_REDCap.makeConsent(redCapExport,birthday);
-
-        Assertions.assertEquals(jsonParser.encodeResourceToString(targetConsent), jsonParser.encodeResourceToString(consent));
+        Assertions.assertTrue(consent.equalsDeep(targetConsent));
     }
 
     @Test
